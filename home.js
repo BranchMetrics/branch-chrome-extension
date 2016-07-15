@@ -2,6 +2,8 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
+var BRANCH_KEY = "branch_key";
+
 /**
  * Get the current URL.
  *
@@ -23,6 +25,40 @@ function getCurrentTabUrl(callback) {
     callback(url);
   });
 }
+
+/**
+ * Save the Branch key for the account.
+ *
+ * @param key for the Branch key used to create the link.
+ * @param {function(string)} callback - called after the Branch key is saved.
+ */
+function saveKey(branch_key, callback) {
+  chrome.storage.sync.set({BRANCH_KEY: branch_key}, function() {
+    setStatus()
+    callback();
+  });
+}
+
+/**
+ * Load the Branch key 
+ *
+ * @param key for the Branch key used to create the link.
+ * @param {function(string)} callback - called once the local storage is read.
+ */
+function readKey(branch_key, callback) {
+  chrome.storage.sync.get(BRANCH_KEY, function(keyObj) {
+    callback(keyObj[BRANCH_KEY]);
+  });
+}
+
+/**
+ * Create a Branch link
+ *
+ * @param key for the Branch key used to create the link.
+ * @param {function(string)} callback - called once the local storage is read.
+ */
+
+ 
 
 /* network call example
 function getImageUrl(searchTerm, callback, errorCallback) {
@@ -60,27 +96,42 @@ function getImageUrl(searchTerm, callback, errorCallback) {
 }*/
 
 function renderUrl(url) {
-  document.getElementById('link-text').textContent = statusText;
+  document.getElementById('link-text').textContent = url;
+  new Clipboard('copy-button');
+  document.getElementById('copy-button').setAttribute('data-clipboard-text', url);
 }
 
 function setStatus(status) {
+  console.log("setting status " + status);
   if (status === 0) {
-    // init
+    // enter Branch key
     document.getElementById("loading-img").style.visibility = "hidden";
-
+    document.getElementById("loading-img").style.width = "0px";
+    document.getElementById("loading-img").style.height = "0px";
   } else if (status === 1) {
-    // loading
+    // saving Branch key
     document.getElementById("loading-img").style.visibility = "visible";
-
+    document.getElementById("loading-img").style.width = "25px";
+    document.getElementById("loading-img").style.height = "25px";
+  } else if (status === 2) {
+    // loading Branch link
+    document.getElementById("loading-img").style.visibility = "visible";
+    document.getElementById("loading-img").style.width = "25px";
+    document.getElementById("loading-img").style.height = "25px";
   } else {
-    // loaded
+    // link loaded
     document.getElementById("loading-img").style.visibility = "hidden";
+    document.getElementById("loading-img").style.width = "0px";
+    document.getElementById("loading-img").style.height = "0px";
   }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  setStatus(1);
+  console.log("loaded!");
+  setStatus(0);
   getCurrentTabUrl(function(url) {
+    console.log("loaded!");
     renderUrl(url);
+    setStatus(2);
   });
 });

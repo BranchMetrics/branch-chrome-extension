@@ -22,24 +22,20 @@
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
      -->
     <link rel="stylesheet" href="bootstrap.min.css">
-    <script src="home.js"></script>
     <script src="clipboard.min.js"></script>
+    <script src="home.js"></script>
   </head>
   <body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-1">
-          <img id="loading-img" src="loading.gif"/>
-        </div>
-        <div class="col-md-7">
-          <p id="link-text"><b>https://branch.io</b></p>
-        </div>
-        <div class="col-md-4">
-          <!-- Trigger -->
-          <button id="copy-button" class="btn-lg btn-primary" data-clipboard-text="https://branch.io">
-            Copy Link!
-          </button>
-        </div>
+    <div class="row">
+      <div class="col-xs-7">
+        <img id="loading-img" class="img-rounded" width="25px" height="25px" src="loading.gif"/>
+        <b><p id="link-text">https://branch.io</p></b>
+      </div>
+      <div class="col-xs-5">
+        <!-- Trigger -->
+        <button id="copy-button" class="btn-lg btn-primary" data-clipboard-text="https://branch.io">
+          Copy Link
+        </button>
       </div>
     </div>
   </body>
