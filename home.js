@@ -96,13 +96,15 @@ function createLink(branch_key, web_url, callback) {
 
     return callback("Could not create link.");
   };
+  var marketing_title = "Link to: " + web_url.substring(web_url.indexOf('://') + 3, Math.min(web_url.length, 50));
+  if (web_url.length > 50) { marketing_title = marketing_title + "..."; }
   x.send(JSON.stringify({
     branch_key: branch_key,
     type: 2,
     auto_fetch: true,
     data: {
       '$fallback_url': web_url,
-      '$marketing_title': "Link to: " + web_url.substring(web_url.indexOf('://') + 3, Math.min(web_url.length, 30))
+      '$marketing_title': marketing_title
     }
   }));
 }
@@ -168,6 +170,7 @@ function setStatus(status) {
 
 function proceedToBranchify(branch_key) {
   setStatus(3);
+  document.getElementById('copy-button').onclick = null;
   getCurrentTabUrl(function(url) {
     createLink(branch_key, url, function(url) {
       renderUrl(url);
@@ -180,7 +183,6 @@ function handleClick() {
   var branch_key = document.getElementById('branch-key-input').value;
   validateKey(branch_key, function(valid) {
     if (valid) {
-      document.getElementById('copy-button').onclick = null;
       saveKey(branch_key);
       proceedToBranchify(branch_key);
     } else {
@@ -191,6 +193,7 @@ function handleClick() {
 
 function handleChangeClick() {
   setStatus(0);
+  document.getElementById('copy-button').onclick = handleClick;
   document.getElementById("branch-key-input").setSelectionRange(0, document.getElementById("branch-key-input").value.length);
 }
 

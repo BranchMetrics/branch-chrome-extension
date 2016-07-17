@@ -15,6 +15,22 @@
         min-width: 350px;
         margin: 20px;
       }
+      .title {
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 15px;
+      }
+      .logo {
+        margin-right: 5px;
+        margin-top: -28px;
+        display: inline-block;
+      }
+      .logo-description {
+        margin-bottom: 0px;
+        font-size: 20px;
+        color: #FFFFFF;
+        display: inline-block;
+      }
       .link {
         cursor: pointer;
         font-size: 18px;
@@ -30,7 +46,6 @@
         background: #323C4A;
       }
       .form-control {
-        margin-top: 10px;
         color: #C5CCD4;
         background: #323C4A;
       }
@@ -43,6 +58,11 @@
     </style>
   </head>
   <body>
+    <div class="title">
+      <img class="logo" src="branch_logo.png" height="40"/>
+      <p class="logo-description" >link creator</p>
+    </div>
+    <hr>
     <div class="row">
       <input id="branch-key-input" type="key" class="form-control" placeholder="Place your public Branch key (key_live_...)">
       <p id="link-text" class="link" ></p>
