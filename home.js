@@ -27,15 +27,35 @@ function getCurrentTabUrl(callback) {
 }
 
 /**
+ * Validate Branch key
+ *
+ * @param key for the Branch key used to create the link.
+ * @param {function(string)} callback - called after the Branch key is saved.
+ */
+function validateKey(branch_key, callback) {
+  var api_endpoint = "https://api.branch.io/v1/app/" + branch_key;
+  var x = new XMLHttpRequest();
+  x.open('GET', api_endpoint);
+  x.onreadystatechange = function() {
+    if (x.readyState == 4 && x.status == 403) {
+      return callback(true);
+    }
+    return callback(false);
+  };
+  x.send();
+}
+
+/**
  * Save the Branch key for the account.
  *
  * @param key for the Branch key used to create the link.
  * @param {function(string)} callback - called after the Branch key is saved.
  */
 function saveKey(branch_key, callback) {
-  chrome.storage.sync.set({BRANCH_KEY: branch_key}, function() {
-    setStatus()
-    callback();
+  var jsonfile = {};
+  jsonfile[BRANCH_KEY] = branch_key;
+  chrome.storage.sync.set(jsonfile, function() {
+    if (callback) { callback(); }
   });
 }
 
@@ -45,7 +65,7 @@ function saveKey(branch_key, callback) {
  * @param key for the Branch key used to create the link.
  * @param {function(string)} callback - called once the local storage is read.
  */
-function readKey(branch_key, callback) {
+function readKey(callback) {
   chrome.storage.sync.get(BRANCH_KEY, function(keyObj) {
     callback(keyObj[BRANCH_KEY]);
   });
@@ -54,84 +74,146 @@ function readKey(branch_key, callback) {
 /**
  * Create a Branch link
  *
- * @param key for the Branch key used to create the link.
+ * @param branch_key the Branch key used to create the link.
+ * @param web_url the current tab url for creating a link
  * @param {function(string)} callback - called once the local storage is read.
  */
+function createLink(branch_key, web_url, callback) {
+  var api_endpoint = "https://api.branch.io/v1/url";
 
- 
-
-/* network call example
-function getImageUrl(searchTerm, callback, errorCallback) {
-  // Google image search - 100 searches per day.
-  // https://developers.google.com/image-search/
-  var searchUrl = 'https://ajax.googleapis.com/ajax/services/search/images' +
-    '?v=1.0&q=' + encodeURIComponent(searchTerm);
   var x = new XMLHttpRequest();
-  x.open('GET', searchUrl);
+  x.open('POST', api_endpoint);
+  x.setRequestHeader("Content-type", "application/json", true);
   // The Google image search API responds with JSON, so let Chrome parse it.
   x.responseType = 'json';
-  x.onload = function() {
-    // Parse and process the response from Google Image Search.
-    var response = x.response;
-    if (!response || !response.responseData || !response.responseData.results ||
-        response.responseData.results.length === 0) {
-      errorCallback('No response from Google Image search!');
-      return;
+  x.onreadystatechange = function() {
+    if (x.readyState == 4 && x.status == 200) {
+      var response = x.response;
+      if (response && response.url) {
+        return callback(response.url);
+      }
     }
-    var firstResult = response.responseData.results[0];
-    // Take the thumbnail instead of the full image to get an approximately
-    // consistent image size.
-    var imageUrl = firstResult.tbUrl;
-    var width = parseInt(firstResult.tbWidth);
-    var height = parseInt(firstResult.tbHeight);
-    console.assert(
-        typeof imageUrl == 'string' && !isNaN(width) && !isNaN(height),
-        'Unexpected respose from the Google Image Search API!');
-    callback(imageUrl, width, height);
+
+    return callback("Could not create link.");
   };
-  x.onerror = function() {
-    errorCallback('Network error.');
-  };
-  x.send();
-}*/
+  x.send(JSON.stringify({
+    branch_key: branch_key,
+    type: 2,
+    auto_fetch: true,
+    data: {
+      '$fallback_url': web_url,
+      '$marketing_title': "Link to: " + web_url.substring(web_url.indexOf('://') + 3, Math.min(web_url.length, 30))
+    }
+  }));
+}
 
 function renderUrl(url) {
   document.getElementById('link-text').textContent = url;
-  new Clipboard('copy-button');
   document.getElementById('copy-button').setAttribute('data-clipboard-text', url);
+  var clipboard = new Clipboard('.btn-lg');
+  clipboard.on('success', function(e) {
+    document.getElementById('copy-button').textContent = "Copied!";
+    setTimeout(function() {
+      document.getElementById('copy-button').textContent = "Copy Link";
+    }, 1000);
+
+    e.clearSelection();
+  });
 }
 
 function setStatus(status) {
   console.log("setting status " + status);
-  if (status === 0) {
+  if (status === -1) {
+    document.getElementById('link-text').textContent = "checking for Branch key...";
+    document.getElementById("link-text").style.display = "inline";
+    document.getElementById("branch-key-input").style.display = "none";
+    document.getElementById("copy-button").style.display = "none";
+    document.getElementById("change-text").style.display = "none";
+  } else if (status === 0) {
     // enter Branch key
-    document.getElementById("loading-img").style.visibility = "hidden";
-    document.getElementById("loading-img").style.width = "0px";
-    document.getElementById("loading-img").style.height = "0px";
+    document.getElementById('link-text').textContent = "";
+    document.getElementById("link-text").style.display = "none";
+    document.getElementById("branch-key-input").style.display = "inline";
+    document.getElementById("copy-button").textContent = "Save Key";
+    document.getElementById("copy-button").style.display = "inline";
+    document.getElementById("change-text").style.display = "none";
   } else if (status === 1) {
     // saving Branch key
-    document.getElementById("loading-img").style.visibility = "visible";
-    document.getElementById("loading-img").style.width = "25px";
-    document.getElementById("loading-img").style.height = "25px";
+    document.getElementById('link-text').textContent = "saving Branch key locally...";
+    document.getElementById("link-text").style.display = "inline";
+    document.getElementById("branch-key-input").style.display = "none";
+    document.getElementById("copy-button").style.display = "none";
+    document.getElementById("change-text").style.display = "none";
   } else if (status === 2) {
+    // key error
+    document.getElementById('link-text').textContent = "Key invalid. Please try again.";
+    document.getElementById("link-text").style.display = "inline";
+    document.getElementById("branch-key-input").style.display = "inline";
+    document.getElementById("copy-button").style.display = "inline";
+    document.getElementById("change-text").style.display = "none";
+  } else if (status === 3) {
     // loading Branch link
-    document.getElementById("loading-img").style.visibility = "visible";
-    document.getElementById("loading-img").style.width = "25px";
-    document.getElementById("loading-img").style.height = "25px";
-  } else {
+    document.getElementById('link-text').textContent = "creating your Branch link...";
+    document.getElementById("branch-key-input").style.display = "none";
+    document.getElementById("copy-button").style.display = "none";
+    document.getElementById("change-text").style.display = "none";
+  } else if (status === 4) {
     // link loaded
-    document.getElementById("loading-img").style.visibility = "hidden";
-    document.getElementById("loading-img").style.width = "0px";
-    document.getElementById("loading-img").style.height = "0px";
+    document.getElementById("copy-button").textContent = "Copy Link";
+    document.getElementById("copy-button").style.display = "inline";
+    document.getElementById("branch-key-input").style.display = "none";
+    document.getElementById("change-text").style.display = "block";
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  console.log("loaded!");
-  setStatus(0);
+function proceedToBranchify(branch_key) {
+  setStatus(3);
   getCurrentTabUrl(function(url) {
-    console.log("loaded!");
-    renderUrl(url);
-    setStatus(2);
+    createLink(branch_key, url, function(url) {
+      renderUrl(url);
+      setStatus(4);
+    });
+  });
+}
+
+function handleClick() {
+  var branch_key = document.getElementById('branch-key-input').value;
+  validateKey(branch_key, function(valid) {
+    if (valid) {
+      document.getElementById('copy-button').onclick = null;
+      saveKey(branch_key);
+      proceedToBranchify(branch_key);
+    } else {
+      setStatus(2);
+    }
+  });
+}
+
+function handleChangeClick() {
+  setStatus(0);
+  document.getElementById("branch-key-input").setSelectionRange(0, document.getElementById("branch-key-input").value.length);
+}
+
+function textClick() {
+  var range = document.createRange();
+  var selection = window.getSelection();
+  range.selectNodeContents(document.getElementById('link-text'));
+
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('copy-button').onclick = handleClick;
+  document.getElementById('change-text').onclick = handleChangeClick;
+  document.getElementById('link-text').onclick = textClick;
+  setStatus(-1);
+  readKey(function(key) {
+    if (key) {
+      proceedToBranchify(key);
+      document.getElementById("branch-key-input").value = key;
+    } else {
+      setStatus(0);
+    }
   });
 });

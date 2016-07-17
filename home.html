@@ -7,37 +7,56 @@
 <html>
   <head>
     <title>Branch Link Creator Extension</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
     <style>
       body {
         font-family: "Open Sans", Helvetica, Arial;
-        font-size: 100%;
-        background-color: #06122F;
+        background: #2A313A;
+        min-width: 350px;
+        margin: 20px;
+      }
+      .link {
+        cursor: pointer;
+        font-size: 18px;
+        color: #FEFEFE;
+        text-shadow: 0 0 0.05em #EEEEEE;
+      }
+      .row {
+        text-align: center;
+      }
+      .btn-lg {
+        margin-top: 10px;
+        color: #C5CCD4;
+        background: #323C4A;
+      }
+      .form-control {
+        margin-top: 10px;
+        color: #C5CCD4;
+        background: #323C4A;
+      }
+      .change-text {
+        cursor: pointer;
+        font-size: 8px;
+        font-weight: bold;
+        color: #BBBBBB;
       }
     </style>
-
-    <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-     -->
-    <link rel="stylesheet" href="bootstrap.min.css">
-    <script src="clipboard.min.js"></script>
-    <script src="home.js"></script>
   </head>
   <body>
     <div class="row">
-      <div class="col-xs-7">
-        <img id="loading-img" class="img-rounded" width="25px" height="25px" src="loading.gif"/>
-        <b><p id="link-text">https://branch.io</p></b>
-      </div>
-      <div class="col-xs-5">
-        <!-- Trigger -->
-        <button id="copy-button" class="btn-lg btn-primary" data-clipboard-text="https://branch.io">
-          Copy Link
-        </button>
-      </div>
+      <input id="branch-key-input" type="key" class="form-control" placeholder="Place your public Branch key (key_live_...)">
+      <p id="link-text" class="link" ></p>
     </div>
+    <div class="row">
+      <!-- Trigger -->
+      <button id="copy-button" class="btn-lg" data-clipboard-text="https://branch.io">
+        Copy Link
+      </button>
+    </div>
+    <p id="change-text" class="change-text">CHANGE KEY</p>
+
+    <script src="clipboard.min.js"></script>
+    <script src="home.js"></script>
   </body>
 </html>
 
