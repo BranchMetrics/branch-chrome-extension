@@ -27,7 +27,7 @@ function getCurrentTabUrl(callback) {
 }
 
 /**
- * Validate Branch key
+ * Validate Branch key - DEPRECATED THIS LOGIC IS NO LONGER VALID
  *
  * @param key for the Branch key used to create the link.
  * @param {function(string)} callback - called after the Branch key is saved.
@@ -181,14 +181,8 @@ function proceedToBranchify(branch_key) {
 
 function handleClick() {
   var branch_key = document.getElementById('branch-key-input').value;
-  validateKey(branch_key, function(valid) {
-    if (valid) {
-      saveKey(branch_key);
-      proceedToBranchify(branch_key);
-    } else {
-      setStatus(2);
-    }
-  });
+  saveKey(branch_key);
+  proceedToBranchify(branch_key);
 }
 
 function handleChangeClick() {
