@@ -130,6 +130,7 @@ function setStatus(status) {
     document.getElementById("link-text").style.display = "inline";
     document.getElementById("branch-key-input").style.display = "none";
     document.getElementById("copy-button").style.display = "none";
+    document.getElementById("edit-button").style.display = "none";
     document.getElementById("change-text").style.display = "none";
   } else if (status === 0) {
     // enter Branch key
@@ -138,6 +139,7 @@ function setStatus(status) {
     document.getElementById("branch-key-input").style.display = "inline";
     document.getElementById("copy-button").textContent = "Save Key";
     document.getElementById("copy-button").style.display = "inline";
+    document.getElementById("edit-button").style.display = "none";
     document.getElementById("change-text").style.display = "none";
   } else if (status === 1) {
     // saving Branch key
@@ -145,24 +147,28 @@ function setStatus(status) {
     document.getElementById("link-text").style.display = "inline";
     document.getElementById("branch-key-input").style.display = "none";
     document.getElementById("copy-button").style.display = "none";
+    document.getElementById("edit-button").style.display = "none";
     document.getElementById("change-text").style.display = "none";
   } else if (status === 2) {
     // key error
-    document.getElementById('link-text').textContent = "Key invalid. Please try again.";
-    document.getElementById("link-text").style.display = "inline";
+    document.getElementById('error-text').textContent = "Key is invalid. Please try again.";
+    document.getElementById("error-text").style.display = "block";
     document.getElementById("branch-key-input").style.display = "inline";
     document.getElementById("copy-button").style.display = "inline";
+    document.getElementById("edit-button").style.display = "none";
     document.getElementById("change-text").style.display = "none";
   } else if (status === 3) {
     // loading Branch link
     document.getElementById('link-text').textContent = "creating your Branch link...";
     document.getElementById("branch-key-input").style.display = "none";
     document.getElementById("copy-button").style.display = "none";
+    document.getElementById("edit-button").style.display = "none";
     document.getElementById("change-text").style.display = "none";
   } else if (status === 4) {
     // link loaded
-    document.getElementById("copy-button").textContent = "Copy Link";
+    document.getElementById("copy-button").textContent = "Copy";
     document.getElementById("copy-button").style.display = "inline";
+    document.getElementById("edit-button").style.display = "inline";
     document.getElementById("branch-key-input").style.display = "none";
     document.getElementById("change-text").style.display = "block";
   }
