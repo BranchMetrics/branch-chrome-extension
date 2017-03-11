@@ -19,6 +19,14 @@
         padding: 30px;
         font-weight: 300;
       }
+      a {
+        color: #1cadce;
+        font-weight: 400;
+      }
+      a:hover {
+        color: #1cadce;
+        text-decoration: none;
+      }
       .title {
         text-align: center;
         vertical-align: middle;
@@ -27,24 +35,44 @@
         margin-right: 20px;
         display: inline-block;
         width: 87px;
-        margin-top: -12px;
+        margin-top: -18px;
       }
       .logo-description {
         margin-bottom: 0px;
         font-size: 25px;
         font-weight: 300;
         display: inline-block;
+        padding-left: 10px;
+        border-left: 1px solid #444;
+        line-height: 1;
       }
       .highlight {
         margin: 20px -30px 8px -30px;
         padding: 10px 30px;
         background: #F2F3F7;
+        height: 60px;
+      }
+      .highlight .actions {
+        display: inline-block;
+        overflow: hidden;
+        padding-bottom: 3px;
+      }
+      .highlight .actions .btn-lg {
+        width: 25px;
+        height: 27px;
+        padding: 0;
+        margin-top: 0;
       }
       .link {
         cursor: pointer;
-        font-size: 18px;
-        font-weight: 700;
+        font-size: 16px;
         color: #1CADCE;
+        font-weight: 400;    
+        width: 240px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        padding: 9px 0;
       }
       .btn-lg {
         margin-top: 10px;
@@ -55,10 +83,12 @@
         padding: 8px 16px;
         font-size: 14px;
         font-weight: 600;
+        margin-left: 7px;
+        display: inline-block;
       }
       .btn-secondary {
         color: #607184;
-        background: #fff;
+        background: none;
         border: 1px solid #607184;
       }
       .form-control {
@@ -79,22 +109,27 @@
         color: #777;
         font-style: italic;
       }
+      .status-text {
+        font-weight: 400;
+        padding: 10px 0;
+        color: #1cadce;
+      }
+      .links {
+        text-transform: uppercase;
+        font-size: 9px;
+        position: absolute;
+        bottom: 30px;
+      }
       .change-text {
         cursor: pointer;
-        font-size: 9px;
-        font-weight: 700;
         color: #748292;
+        font-weight: 700;
+      }
+      .change-text a {
+        font-weight: 700;
       }
       .info {
         font-size: 12px;
-      }
-      a {
-        color: #1cadce;
-        font-weight: 400;
-      }
-      a:hover {
-        color: #1cadce;
-        text-decoration: none;
       }
       .buttons {
         padding-top: 20px;
@@ -104,29 +139,74 @@
         font-size: 12px;
         margin: 2px 0 -2px 0;
       }
+      .hidden {
+        display: none;
+      }
+      #copy-button {
+        background: #1cadce url("/ic_copy.png") no-repeat center center / 16px 16px;
+      }
+      #edit-button {
+        background: url("/ic_edit.png") no-repeat center center / 16px 16px;
+      }
+      #copy-text {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 10px;
+        display: none;
+        color: #1fb955;
+        margin-top: -8px;
+      }
     </style>
   </head>
   <body>
     <div class="title">
       <img class="logo" src="branch_logo.png" />
-      <p class="logo-description" >| &nbsp;Link Creator</p>
+      <p class="logo-description" >Link Creator</p>
     </div>
+
     <div class="highlight">
-      <input id="branch-key-input" type="key" class="form-control" placeholder="Place your public Branch key (key_live...)">
-      <div id="link-text" class="link" ></div>
-      <div id="error-text" class="text-right error"></div>
+      <div id="status-text" class="text-center status-text" ></div>
+
+      <div class="key-screen">
+        <input id="branch-key-input" type="key" class="form-control" placeholder="Place your public Branch key (key_live...)">
+        <div id="error-text" class="text-right error"></div>
+      </div>
+
+      <div class="link-screen">
+        <div id="link-text" class="link" ></div>
+
+        <div class="text-right actions">
+          <!-- Trigger -->
+          <button id="edit-button" class="btn-lg btn-secondary" data-clipboard-text="https://branch.io">
+          </button>
+          <button id="copy-button" class="btn-lg" data-clipboard-text="https://branch.io">
+          </button>
+        </div>
+        <div id="copy-text" class="text-right">Copied to Clipboard</div>
+      </div>
+
     </div>
-    <div id="key-text" class="info text-right">Retrieve your Branch Key from <a href="https://dashboard.branch.io/settings" target="_blank">Settings</a>.</div>
-    <div class="text-right buttons">
-      <!-- Trigger -->
-      <button id="edit-button" class="btn-lg btn-secondary" data-clipboard-text="https://branch.io">
-        Edit
-      </button>
-      <button id="copy-button" class="btn-lg" data-clipboard-text="https://branch.io">
-        Copy
-      </button>
+
+    <div class="key-screen">
+      <div id="key-text" class="info text-right">Retrieve your Branch Key from <a href="https://dashboard.branch.io/settings" target="_blank">Settings</a>.</div>
+
+      <div class="text-right buttons">
+        <button id="save-button" class="btn-lg" data-clipboard-text="https://branch.io">
+        </button>
+      </div>
     </div>
-    <p id="change-text" class="change-text">CHANGE KEY</p>
+
+    <div class="link-screen">
+      <div class="text-left links">
+        <span id="change-text" class="change-text">Change Key</span> &nbsp;|&nbsp; <span id="help-text" class="change-text"><a href="https://dev.branch.io/getting-started/creating-links/chrome-extension/" target="_blank">Help</a></span>
+      </div>
+
+      <div class="text-right buttons">
+        <a href="https://dashboard.branch.io/marketing" target="_blank" class="btn-lg btn-secondary">
+          Dashboard
+        </a>
+      </div>
+    </div>
 
     <script src="clipboard.min.js"></script>
     <script src="home.js"></script>
