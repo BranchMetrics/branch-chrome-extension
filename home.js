@@ -114,6 +114,13 @@ function createLink(branch_key, web_url, callback) {
 
 function renderUrl(url) {
   document.getElementById('link-text').textContent = url;
+
+  // domain for edit screen
+  var l = document.createElement('a');
+  l.href = url;
+  var domain = l.hostname + '/';
+  document.getElementById('domain-text').textContent = domain;
+
   document.getElementById('copy-button').setAttribute('data-clipboard-text', url);
   var clipboard = new Clipboard('#copy-button');
   clipboard.on('success', function(e) {
@@ -274,6 +281,8 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('copy-button').onclick = handleClick;
   document.getElementById('change-text').onclick = handleChangeClick;
   document.getElementById('save-button').onclick = handleClick;
+  document.getElementById('edit-save-button').onclick = handleClick;
+  document.getElementById('edit-cancel-button').onclick = handleClick;
   document.getElementById('edit-button').onclick = handleEditClick;
   document.getElementById('link-text').onclick = textClick;
   setStatus(-1);
