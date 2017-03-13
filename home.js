@@ -115,7 +115,7 @@ function createLink(branch_key, web_url, callback) {
 function renderUrl(url) {
   document.getElementById('link-text').textContent = url;
   document.getElementById('copy-button').setAttribute('data-clipboard-text', url);
-  var clipboard = new Clipboard('.btn-lg');
+  var clipboard = new Clipboard('#copy-button');
   clipboard.on('success', function(e) {
     document.getElementById('copy-text').style.display = "block";
     setTimeout(function() {
@@ -151,6 +151,10 @@ function setStatus(status) {
     for (var i = 0; i < elements.length; i++) {
       elements[i].style.display="block";
     }
+    elements = document.getElementsByClassName("edit-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
   } else if (status === 1) {
     // saving Branch key
     document.getElementById('status-text').textContent = "saving Branch key locally...";
@@ -160,6 +164,10 @@ function setStatus(status) {
       elements[i].style.display="none";
     }
     elements = document.getElementsByClassName("key-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("edit-screen");
     for (var i = 0; i < elements.length; i++) {
       elements[i].style.display="none";
     }
@@ -179,6 +187,10 @@ function setStatus(status) {
     for (var i = 0; i < elements.length; i++) {
       elements[i].style.display="none";
     }
+    elements = document.getElementsByClassName("edit-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
   } else if (status === 4) {
     // link loaded
     document.getElementById("status-text").style.display = "none";
@@ -189,6 +201,25 @@ function setStatus(status) {
     elements = document.getElementsByClassName("key-screen");
     for (var i = 0; i < elements.length; i++) {
       elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("edit-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+  } else if (status === 5) {
+    // link loaded
+    document.getElementById("status-text").style.display = "none";
+    elements = document.getElementsByClassName("link-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("key-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("edit-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="block";
     }
   }
 }
@@ -234,9 +265,16 @@ function textClick() {
   selection.addRange(range);
 }
 
+function handleEditClick() {
+  setStatus(5);
+  document.getElementById('edit-save-button').onclick = handleClick;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('copy-button').onclick = handleClick;
   document.getElementById('change-text').onclick = handleChangeClick;
+  document.getElementById('save-button').onclick = handleClick;
+  document.getElementById('edit-button').onclick = handleEditClick;
   document.getElementById('link-text').onclick = textClick;
   setStatus(-1);
   readKey(function(key) {

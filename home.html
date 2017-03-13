@@ -85,10 +85,21 @@
         font-weight: 600;
         margin-left: 7px;
         display: inline-block;
+        -webkit-transition: all .2s linear;
+        transition: all .2s linear;
+      }
+      .btn-lg:hover, #copy-button:hover {
+        border: 1px solid #269eb9;
+        background-color: #269eb9;
       }
       .btn-secondary {
         color: #607184;
-        background: none;
+        background-color: transparent;
+        border: 1px solid #607184;
+      }
+      .btn-secondary:hover, #edit-button:hover {
+        color: #607184;
+        background-color: #f2f3f7;
         border: 1px solid #607184;
       }
       .form-control {
@@ -131,7 +142,7 @@
       .info {
         font-size: 12px;
       }
-      .buttons {
+      .buttons, .web-only {
         padding-top: 20px;
       }
       .error {
@@ -155,6 +166,20 @@
         display: none;
         color: #1fb955;
         margin-top: -8px;
+      }
+      .analytics-tags {
+        margin: 15px 0 20px 0;
+      }
+      .analytics-tags input, #alias-input{
+        display: inline-block;
+        width: 150px;
+      }
+      #campaign-input {
+        margin-left: 7px;
+      }
+      #domain-text {
+        padding-right: 7px;
+        width: 157px;
       }
     </style>
   </head>
@@ -185,6 +210,15 @@
         <div id="copy-text" class="text-right">Copied to Clipboard</div>
       </div>
 
+      <div class="edit-screen">
+        <div id="domain-text" class="link" >branch.app.link/</div>
+
+        <div class="text-right actions">
+          <input id="alias-input" type="key" class="form-control" placeholder="TivYNGu">
+        </div>
+        <div id="error-text" class="text-right error"></div>
+      </div>
+
     </div>
 
     <div class="key-screen">
@@ -192,6 +226,7 @@
 
       <div class="text-right buttons">
         <button id="save-button" class="btn-lg" data-clipboard-text="https://branch.io">
+          Save Key
         </button>
       </div>
     </div>
@@ -205,6 +240,32 @@
         <a href="https://dashboard.branch.io/marketing" target="_blank" class="btn-lg btn-secondary">
           Dashboard
         </a>
+      </div>
+    </div>
+
+    <div class="edit-screen">
+      <div class="analytics-tags">
+        <input id="channel-input" type="key" class="form-control" placeholder="channel">
+        <input id="campaign-input" type="key" class="form-control" placeholder="campaign">
+      </div>
+      <input id="tags-input" type="key" class="form-control" placeholder="tags">
+
+      <div class="web-only" class="info">
+        <input id="web-only-input" type="checkbox">
+        <div>
+          Web-only link
+          <div class="info">
+            Always redirect to web, even if the app is installed.
+          </div>
+      </div>
+
+      <div class="text-right buttons">
+        <button id="edit-cancel-button" class="btn-lg btn-secondary" data-clipboard-text="https://branch.io">
+          Cancel
+        </button>
+        <button id="edit-save-button" class="btn-lg" data-clipboard-text="https://branch.io">
+          Save
+        </button>
       </div>
     </div>
 
