@@ -3,6 +3,13 @@
 // found in the LICENSE file.
 
 var BRANCH_KEY = "branch_key";
+var link_data = {
+    type: 2,
+    auto_fetch: true,
+    feature: 'Link Creator',
+    data: {
+    }
+  };
 
 /**
  * Get the current URL.
@@ -100,16 +107,24 @@ function createLink(branch_key, web_url, callback) {
     return callback("Could not create link.");
   };
   var marketing_title = "Link to: " + web_url.substring(web_url.indexOf('://') + 3, Math.min(web_url.length, 50));
+  console.log('Link Data:');
+  //console.log(alias)
+  //console.log(channel)
+  //console.log(campaign)
+  //console.log(tags)
+  //console.log(web_only)
   if (web_url.length > 50) { marketing_title = marketing_title + "..."; }
-  x.send(JSON.stringify({
-    branch_key: branch_key,
-    type: 2,
-    auto_fetch: true,
-    data: {
-      '$fallback_url': web_url,
-      '$marketing_title': marketing_title
-    }
-  }));
+
+  // fill in remainder of link data
+  link_data.branch_key = branch_key;
+  link_data.data.$marketing_title = marketing_title;
+  link_data.data.$fallback_url = web_url;
+  link_data.data.$desktop_url = web_url;
+  link_data.data.$android_url = web_url;
+  link_data.data.$ios_url = web_url;
+  console.log(link_data);
+
+  x.send(JSON.stringify(link_data));
 }
 
 function renderUrl(url) {
@@ -214,7 +229,7 @@ function setStatus(status) {
       elements[i].style.display="none";
     }
   } else if (status === 5) {
-    // link loaded
+    // editing link
     document.getElementById("status-text").style.display = "none";
     elements = document.getElementsByClassName("link-screen");
     for (var i = 0; i < elements.length; i++) {
@@ -274,15 +289,78 @@ function textClick() {
 
 function handleEditClick() {
   setStatus(5);
-  document.getElementById('edit-save-button').onclick = handleClick;
+  document.getElementById('edit-cancel-button').onclick = handleCancelClick;
+  document.getElementById('edit-save-button').onclick = handleSaveClick;
+}
+
+function handleCancelClick() {
+  if (link_data.alias != null) {
+    document.getElementById('alias-input').value = link_data.alias;
+  }
+  else {
+    document.getElementById('alias-input').value = "";
+  }
+  if (link_data.channel != null) {
+    document.getElementById('channel-input').value = link_data.channel;
+  }
+  else {
+    document.getElementById('channel-input').value = "";
+  }
+  if (link_data.campaign != null) {
+    document.getElementById('campaign-input').value = link_data.campaign;
+  }
+  else {
+    document.getElementById('campaign-input').value = "";
+  }
+  if (link_data.tags != null) {
+    document.getElementById('tags-input').value = link_data.tags.join(' ');
+  }
+  else {
+    document.getElementById('tags-input').value = "";
+  }
+  if (link_data.data.$web_only != null) {
+    document.getElementById('web-only-input').checked = link_data.data.web_only;
+  }
+  handleClick();
+}
+
+function handleSaveClick() {
+  if (document.getElementById('alias-input').value != "") {
+    link_data.alias = document.getElementById('alias-input').value;
+  }
+  else {
+    delete link_data.alias;
+  }
+  if (document.getElementById('channel-input').value != "") {
+    link_data.channel = document.getElementById('channel-input').value;
+  }
+  else {
+    delete link_data.channel;
+  }
+  if (document.getElementById('campaign-input').value != "") {
+    link_data.campaign = document.getElementById('campaign-input').value;
+  }
+  else {
+    delete link_data.campaign;
+  }
+  if (document.getElementById('tags-input').value != "") {
+    link_data.tags = document.getElementById('tags-input').value.split(' ');
+  }
+  else {
+    delete link_data.tags;
+  }
+  if (document.getElementById('web-only-input').checked != false) {
+    link_data.data.$web_only = document.getElementById('web-only-input').checked;
+  }
+  else {
+    delete link_data.data.$web_only;
+  }
+  handleClick();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('copy-button').onclick = handleClick;
   document.getElementById('change-text').onclick = handleChangeClick;
-  document.getElementById('save-button').onclick = handleClick;
-  document.getElementById('edit-save-button').onclick = handleClick;
-  document.getElementById('edit-cancel-button').onclick = handleClick;
   document.getElementById('edit-button').onclick = handleEditClick;
   document.getElementById('link-text').onclick = textClick;
   setStatus(-1);
