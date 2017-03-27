@@ -8,72 +8,97 @@
   <head>
     <title>Branch Link Creator Extension</title>
     <link rel="stylesheet" href="bootstrap.min.css">
-    <style>
-      body {
-        font-family: "Open Sans", Helvetica, Arial;
-        background: #2A313A;
-        min-width: 350px;
-        margin: 20px;
-      }
-      .title {
-        text-align: center;
-        margin-top: 30px;
-        margin-bottom: 15px;
-      }
-      .logo {
-        margin-right: 5px;
-        margin-top: -28px;
-        display: inline-block;
-      }
-      .logo-description {
-        margin-bottom: 0px;
-        font-size: 20px;
-        color: #FFFFFF;
-        display: inline-block;
-      }
-      .link {
-        cursor: pointer;
-        font-size: 18px;
-        color: #FEFEFE;
-        text-shadow: 0 0 0.05em #EEEEEE;
-      }
-      .row {
-        text-align: center;
-      }
-      .btn-lg {
-        margin-top: 10px;
-        color: #C5CCD4;
-        background: #323C4A;
-      }
-      .form-control {
-        color: #C5CCD4;
-        background: #323C4A;
-      }
-      .change-text {
-        cursor: pointer;
-        font-size: 8px;
-        font-weight: bold;
-        color: #BBBBBB;
-      }
-    </style>
+    <link rel="stylesheet" href="home.css">
   </head>
   <body>
     <div class="title">
-      <img class="logo" src="branch_logo.png" height="40"/>
-      <p class="logo-description" >link creator</p>
+      <img class="logo" src="branch_logo.png" />
+      <p class="logo-description" >Link Creator</p>
     </div>
-    <hr>
-    <div class="row">
-      <input id="branch-key-input" type="key" class="form-control" placeholder="Place your public Branch key (key_live_...)">
-      <p id="link-text" class="link" ></p>
+
+    <div class="highlight">
+      <div id="status-text" class="text-center status-text" ></div>
+
+      <div class="key-screen">
+        <input id="branch-key-input" type="key" class="form-control" placeholder="Place your public Branch key (key_live...)">
+        <div id="error-text" class="text-right error"></div>
+      </div>
+
+      <div class="link-screen">
+        <div id="link-text" class="link" ></div>
+
+        <div class="text-right actions">
+          <!-- Trigger -->
+          <button id="edit-button" class="btn-lg btn-secondary" data-clipboard-text="https://branch.io">
+          </button>
+          <button id="copy-button" class="btn-lg" data-clipboard-text="https://branch.io">
+          </button>
+        </div>
+        <div id="copy-text" class="text-right">Copied to Clipboard</div>
+      </div>
+
+      <div class="edit-screen">
+        <div id="domain-text" class="link text-right" >branch.app.link/</div>
+
+        <div class="text-right actions">
+          <input id="alias-input" type="key" class="form-control" placeholder="TivYNGu">
+        </div>
+        <div id="error-text" class="text-right error"></div>
+      </div>
+
     </div>
-    <div class="row">
-      <!-- Trigger -->
-      <button id="copy-button" class="btn-lg" data-clipboard-text="https://branch.io">
-        Copy Link
-      </button>
+
+    <div class="key-screen">
+      <div id="key-text" class="info text-right">Retrieve your Branch Key from <a href="https://dashboard.branch.io/settings" target="_blank">Settings</a>.</div>
+
+      <div class="text-right buttons">
+        <button id="save-button" class="btn-lg" data-clipboard-text="https://branch.io">
+          Save Key
+        </button>
+      </div>
     </div>
-    <p id="change-text" class="change-text">CHANGE KEY</p>
+
+    <div class="link-screen">
+      <div class="text-left links">
+        <span id="change-text" class="change-text">Change Key</span> &nbsp;|&nbsp; <span id="help-text" class="change-text"><a href="https://dev.branch.io/getting-started/creating-links/chrome-extension/" target="_blank">Help</a></span>
+      </div>
+
+      <div class="text-right buttons">
+        <a href="https://dashboard.branch.io/marketing" target="_blank" class="btn-lg btn-secondary">
+          Dashboard
+        </a>
+      </div>
+    </div>
+
+    <div class="edit-screen">
+      <div class="analytics-tags">
+        <input id="channel-input" type="key" class="form-control" placeholder="channel">
+        <input id="campaign-input" type="key" class="form-control" placeholder="campaign">
+      </div>
+      <input id="tags-input" type="key" class="form-control" placeholder="tags (separated by spaces)">
+
+        
+      <div class="custom-checkbox">
+        <input type="checkbox" id="web-only-input">
+        <label for="web-only-input">
+          <div class="web-only">
+            Web-only link
+            <div class="info">
+              Always redirect to web, even if the app is installed.
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="text-right buttons">
+        <button id="edit-cancel-button" class="btn-lg btn-secondary" data-clipboard-text="https://branch.io">
+          Cancel
+        </button>
+        <button id="edit-save-button" class="btn-lg" data-clipboard-text="https://branch.io">
+          Save
+        </button>
+      </div>
+    </div>
 
     <script src="clipboard.min.js"></script>
     <script src="home.js"></script>
