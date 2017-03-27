@@ -41,13 +41,13 @@ function getCurrentTabUrl(callback) {
  */
 function validateKey(branch_key, callback) {
   var api_endpoint = "https://api.branch.io/v1/app/" + branch_key;
-  //var api_endpoint = "https://api.branch.io/v1/app/" + branch_key + "?branch_secret=secret_live_IwNCZ9FYVJ436EV8t3q1PVFMSelAtNi1";
   var x = new XMLHttpRequest();
   x.open('GET', api_endpoint);
   x.onreadystatechange = function() {
-    console.log(x.readyState);
-    console.log(x.status);
     if (x.readyState == 4 && x.status == 403) {
+      return callback(true);
+    }
+    else if (x.readyState == 4 && x.status == 400) {
       return callback(true);
     }
     return callback(false);
@@ -107,12 +107,6 @@ function createLink(branch_key, web_url, callback) {
     return callback("Could not create link.");
   };
   var marketing_title = "Link to: " + web_url.substring(web_url.indexOf('://') + 3, Math.min(web_url.length, 50));
-  console.log('Link Data:');
-  //console.log(alias)
-  //console.log(channel)
-  //console.log(campaign)
-  //console.log(tags)
-  //console.log(web_only)
   if (web_url.length > 50) { marketing_title = marketing_title + "..."; }
 
   // fill in remainder of link data
@@ -122,7 +116,6 @@ function createLink(branch_key, web_url, callback) {
   link_data.data.$desktop_url = web_url;
   link_data.data.$android_url = web_url;
   link_data.data.$ios_url = web_url;
-  console.log(link_data);
 
   x.send(JSON.stringify(link_data));
 }
@@ -181,6 +174,7 @@ function setStatus(status) {
     // saving Branch key
     document.getElementById('status-text').textContent = "saving Branch key locally...";
     document.getElementById("status-text").style.display = "inline-block";
+    document.getElementById("error-text").style.display = "none";
     elements = document.getElementsByClassName("link-screen");
     for (var i = 0; i < elements.length; i++) {
       elements[i].style.display="none";
@@ -201,6 +195,7 @@ function setStatus(status) {
     // loading Branch link
     document.getElementById('status-text').textContent = "Creating your Branch link...";
     document.getElementById('status-text').style.display = "block";
+    document.getElementById("error-text").style.display = "none";
     elements = document.getElementsByClassName("link-screen");
     for (var i = 0; i < elements.length; i++) {
       elements[i].style.display="none";
@@ -260,9 +255,6 @@ function proceedToBranchify(branch_key) {
 function handleClick() {
   var branch_key = document.getElementById('branch-key-input').value;
   validateKey(branch_key, function(valid) {
-    console.log("valid");
-    console.log(valid);
-    valid = true;
     if (valid) {
       saveKey(branch_key);
       proceedToBranchify(branch_key);
@@ -287,12 +279,14 @@ function textClick() {
   selection.addRange(range);
 }
 
+// Show edit screen
 function handleEditClick() {
   setStatus(5);
   document.getElementById('edit-cancel-button').onclick = handleCancelClick;
   document.getElementById('edit-save-button').onclick = handleSaveClick;
 }
 
+// clear out unsaved link data
 function handleCancelClick() {
   if (link_data.alias != null) {
     document.getElementById('alias-input').value = link_data.alias;
@@ -324,6 +318,7 @@ function handleCancelClick() {
   handleClick();
 }
 
+// Save valid link data
 function handleSaveClick() {
   if (document.getElementById('alias-input').value != "") {
     link_data.alias = document.getElementById('alias-input').value;
