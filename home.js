@@ -351,6 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('copy-button').onclick = handleClick;
   document.getElementById('change-text').onclick = handleChangeClick;
   document.getElementById('edit-button').onclick = handleEditClick;
+  document.getElementById('save-button').onclick = handleClick;
   document.getElementById('link-text').onclick = textClick;
   setStatus(-1);
   readKey(function(key) {
