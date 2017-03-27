@@ -3,6 +3,13 @@
 // found in the LICENSE file.
 
 var BRANCH_KEY = "branch_key";
+var link_data = {
+    type: 2,
+    auto_fetch: true,
+    feature: 'Link Creator',
+    data: {
+    }
+  };
 
 /**
  * Get the current URL.
@@ -38,6 +45,9 @@ function validateKey(branch_key, callback) {
   x.open('GET', api_endpoint);
   x.onreadystatechange = function() {
     if (x.readyState == 4 && x.status == 403) {
+      return callback(true);
+    }
+    else if (x.readyState == 4 && x.status == 400) {
       return callback(true);
     }
     return callback(false);
@@ -98,26 +108,34 @@ function createLink(branch_key, web_url, callback) {
   };
   var marketing_title = "Link to: " + web_url.substring(web_url.indexOf('://') + 3, Math.min(web_url.length, 50));
   if (web_url.length > 50) { marketing_title = marketing_title + "..."; }
-  x.send(JSON.stringify({
-    branch_key: branch_key,
-    type: 2,
-    auto_fetch: true,
-    data: {
-      '$fallback_url': web_url,
-      '$marketing_title': marketing_title
-    }
-  }));
+
+  // fill in remainder of link data
+  link_data.branch_key = branch_key;
+  link_data.data.$marketing_title = marketing_title;
+  link_data.data.$fallback_url = web_url;
+  link_data.data.$desktop_url = web_url;
+  link_data.data.$android_url = web_url;
+  link_data.data.$ios_url = web_url;
+
+  x.send(JSON.stringify(link_data));
 }
 
 function renderUrl(url) {
   document.getElementById('link-text').textContent = url;
+
+  // domain for edit screen
+  var l = document.createElement('a');
+  l.href = url;
+  var domain = l.hostname + '/';
+  document.getElementById('domain-text').textContent = domain;
+
   document.getElementById('copy-button').setAttribute('data-clipboard-text', url);
-  var clipboard = new Clipboard('.btn-lg');
+  var clipboard = new Clipboard('#copy-button');
   clipboard.on('success', function(e) {
-    document.getElementById('copy-button').textContent = "Copied!";
+    document.getElementById('copy-text').style.display = "block";
     setTimeout(function() {
-      document.getElementById('copy-button').textContent = "Copy Link";
-    }, 1000);
+      document.getElementById('copy-text').style.display = "none";
+    }, 5000);
 
     e.clearSelection();
   });
@@ -126,45 +144,100 @@ function renderUrl(url) {
 function setStatus(status) {
   console.log("setting status " + status);
   if (status === -1) {
-    document.getElementById('link-text').textContent = "checking for Branch key...";
-    document.getElementById("link-text").style.display = "inline";
-    document.getElementById("branch-key-input").style.display = "none";
-    document.getElementById("copy-button").style.display = "none";
-    document.getElementById("change-text").style.display = "none";
+    document.getElementById('status-text').textContent = "Checking for Branch key...";
+    document.getElementById("status-text").style.display = "inline-block";
+    elements = document.getElementsByClassName("link-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("key-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
   } else if (status === 0) {
     // enter Branch key
-    document.getElementById('link-text').textContent = "";
-    document.getElementById("link-text").style.display = "none";
-    document.getElementById("branch-key-input").style.display = "inline";
-    document.getElementById("copy-button").textContent = "Save Key";
-    document.getElementById("copy-button").style.display = "inline";
-    document.getElementById("change-text").style.display = "none";
+    document.getElementById('status-text').textContent = "";
+    document.getElementById("status-text").style.display = "none";
+    elements = document.getElementsByClassName("link-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("key-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="block";
+    }
+    elements = document.getElementsByClassName("edit-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
   } else if (status === 1) {
     // saving Branch key
-    document.getElementById('link-text').textContent = "saving Branch key locally...";
-    document.getElementById("link-text").style.display = "inline";
-    document.getElementById("branch-key-input").style.display = "none";
-    document.getElementById("copy-button").style.display = "none";
-    document.getElementById("change-text").style.display = "none";
+    document.getElementById('status-text').textContent = "saving Branch key locally...";
+    document.getElementById("status-text").style.display = "inline-block";
+    document.getElementById("error-text").style.display = "none";
+    elements = document.getElementsByClassName("link-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("key-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("edit-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
   } else if (status === 2) {
     // key error
-    document.getElementById('link-text').textContent = "Key invalid. Please try again.";
-    document.getElementById("link-text").style.display = "inline";
-    document.getElementById("branch-key-input").style.display = "inline";
-    document.getElementById("copy-button").style.display = "inline";
-    document.getElementById("change-text").style.display = "none";
+    document.getElementById('error-text').textContent = "Key is invalid. Please try again.";
+    document.getElementById("error-text").style.display = "block";
   } else if (status === 3) {
     // loading Branch link
-    document.getElementById('link-text').textContent = "creating your Branch link...";
-    document.getElementById("branch-key-input").style.display = "none";
-    document.getElementById("copy-button").style.display = "none";
-    document.getElementById("change-text").style.display = "none";
+    document.getElementById('status-text').textContent = "Creating your Branch link...";
+    document.getElementById('status-text').style.display = "block";
+    document.getElementById("error-text").style.display = "none";
+    elements = document.getElementsByClassName("link-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("key-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("edit-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
   } else if (status === 4) {
     // link loaded
-    document.getElementById("copy-button").textContent = "Copy Link";
-    document.getElementById("copy-button").style.display = "inline";
-    document.getElementById("branch-key-input").style.display = "none";
-    document.getElementById("change-text").style.display = "block";
+    document.getElementById("status-text").style.display = "none";
+    elements = document.getElementsByClassName("link-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="block";
+    }
+    elements = document.getElementsByClassName("key-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("edit-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+  } else if (status === 5) {
+    // editing link
+    document.getElementById("status-text").style.display = "none";
+    elements = document.getElementsByClassName("link-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("key-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="none";
+    }
+    elements = document.getElementsByClassName("edit-screen");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display="block";
+    }
   }
 }
 
@@ -193,7 +266,7 @@ function handleClick() {
 
 function handleChangeClick() {
   setStatus(0);
-  document.getElementById('copy-button').onclick = handleClick;
+  document.getElementById('save-button').onclick = handleClick;
   document.getElementById("branch-key-input").setSelectionRange(0, document.getElementById("branch-key-input").value.length);
 }
 
@@ -206,9 +279,84 @@ function textClick() {
   selection.addRange(range);
 }
 
+// Show edit screen
+function handleEditClick() {
+  setStatus(5);
+  document.getElementById('edit-cancel-button').onclick = handleCancelClick;
+  document.getElementById('edit-save-button').onclick = handleSaveClick;
+}
+
+// clear out unsaved link data
+function handleCancelClick() {
+  if (link_data.alias != null) {
+    document.getElementById('alias-input').value = link_data.alias;
+  }
+  else {
+    document.getElementById('alias-input').value = "";
+  }
+  if (link_data.channel != null) {
+    document.getElementById('channel-input').value = link_data.channel;
+  }
+  else {
+    document.getElementById('channel-input').value = "";
+  }
+  if (link_data.campaign != null) {
+    document.getElementById('campaign-input').value = link_data.campaign;
+  }
+  else {
+    document.getElementById('campaign-input').value = "";
+  }
+  if (link_data.tags != null) {
+    document.getElementById('tags-input').value = link_data.tags.join(' ');
+  }
+  else {
+    document.getElementById('tags-input').value = "";
+  }
+  if (link_data.data.$web_only != null) {
+    document.getElementById('web-only-input').checked = link_data.data.web_only;
+  }
+  handleClick();
+}
+
+// Save valid link data
+function handleSaveClick() {
+  if (document.getElementById('alias-input').value != "") {
+    link_data.alias = document.getElementById('alias-input').value;
+  }
+  else {
+    delete link_data.alias;
+  }
+  if (document.getElementById('channel-input').value != "") {
+    link_data.channel = document.getElementById('channel-input').value;
+  }
+  else {
+    delete link_data.channel;
+  }
+  if (document.getElementById('campaign-input').value != "") {
+    link_data.campaign = document.getElementById('campaign-input').value;
+  }
+  else {
+    delete link_data.campaign;
+  }
+  if (document.getElementById('tags-input').value != "") {
+    link_data.tags = document.getElementById('tags-input').value.split(' ');
+  }
+  else {
+    delete link_data.tags;
+  }
+  if (document.getElementById('web-only-input').checked != false) {
+    link_data.data.$web_only = document.getElementById('web-only-input').checked;
+  }
+  else {
+    delete link_data.data.$web_only;
+  }
+  handleClick();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('copy-button').onclick = handleClick;
   document.getElementById('change-text').onclick = handleChangeClick;
+  document.getElementById('edit-button').onclick = handleEditClick;
   document.getElementById('link-text').onclick = textClick;
   setStatus(-1);
   readKey(function(key) {
