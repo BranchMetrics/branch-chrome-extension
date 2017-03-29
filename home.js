@@ -132,7 +132,7 @@ function renderUrl(url) {
   document.getElementById('copy-button').setAttribute('data-clipboard-text', url);
   var clipboard = new Clipboard('#copy-button');
   clipboard.on('success', function(e) {
-    document.getElementById('copy-text').style.display = "block";
+    document.getElementById('copy-text').style.display = "inline-block";
     setTimeout(function() {
       document.getElementById('copy-text').style.display = "none";
     }, 5000);
