@@ -25,9 +25,9 @@
       </div>
 
       <div class="link-screen">
-        <div id="link-text" class="link" ></div>
+        <div id="link-text" class="link left-column" ></div>
 
-        <div class="text-right actions">
+        <div class="text-right actions right-column">
           <!-- Trigger -->
           <button id="edit-button" class="btn-lg btn-secondary" data-clipboard-text="https://branch.io">
           </button>
@@ -38,9 +38,9 @@
       </div>
 
       <div class="edit-screen">
-        <div id="domain-text" class="link text-right" >branch.app.link/</div>
+        <div id="domain-text" class="link text-right left-column" >branch.app.link/</div>
 
-        <div class="text-right actions">
+        <div class="text-right right-column">
           <input id="alias-input" type="key" class="form-control" placeholder="TivYNGu">
         </div>
         <div id="error-text" class="text-right error"></div>
@@ -59,11 +59,11 @@
     </div>
 
     <div class="link-screen">
-      <div class="text-left links">
+      <div class="text-left links left-column">
         <span id="change-text" class="change-text">Change Key</span> &nbsp;|&nbsp; <span id="help-text" class="change-text"><a href="https://dev.branch.io/getting-started/creating-links/chrome-extension/" target="_blank">Help</a></span>
       </div>
 
-      <div class="text-right buttons">
+      <div class="text-right buttons right-column">
         <a href="https://dashboard.branch.io/marketing" target="_blank" class="btn-lg btn-secondary">
           Dashboard
         </a>
@@ -72,8 +72,12 @@
 
     <div class="edit-screen">
       <div class="analytics-tags">
-        <input id="channel-input" type="key" class="form-control" placeholder="channel">
-        <input id="campaign-input" type="key" class="form-control" placeholder="campaign">
+        <div class="left-column">
+          <input id="channel-input" type="key" class="form-control" placeholder="channel">
+        </div>
+        <div class="right-column">
+          <input id="campaign-input" type="key" class="form-control" placeholder="campaign">
+        </div>
       </div>
       <input id="tags-input" type="key" class="form-control" placeholder="tags (separated by spaces)">
 
