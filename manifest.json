@@ -3,7 +3,7 @@
 
   "name": "Branch Link Creator",
   "description": "This extension is to be used to create Branch links from your Chrome browser.",
-  "version": "1.1",
+  "version": "1.2",
 
   "browser_action": {
     "default_icon": "icon.png",
