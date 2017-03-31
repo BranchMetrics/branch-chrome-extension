@@ -315,6 +315,9 @@ function handleCancelClick() {
   if (link_data.data.$web_only != null) {
     document.getElementById('web-only-input').checked = link_data.data.web_only;
   }
+  else {
+    document.getElementById('web-only-input').checked = false;
+  }
   handleClick();
 }
 
