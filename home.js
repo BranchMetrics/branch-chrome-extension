@@ -116,6 +116,8 @@ function createLink(branch_key, web_url, callback) {
   link_data.data.$desktop_url = web_url;
   link_data.data.$android_url = web_url;
   link_data.data.$ios_url = web_url;
+  link_data.data.$original_url = web_url;
+  link_data.data.$canonical_url = web_url;
 
   x.send(JSON.stringify(link_data));
 }
