@@ -106,8 +106,8 @@ function createLink(branch_key, web_url, callback) {
 
     return callback("Could not create link.");
   };
-  var marketing_title = "Link to: " + web_url.substring(web_url.indexOf('://') + 3, Math.min(web_url.length, 50));
-  if (web_url.length > 50) { marketing_title = marketing_title + "..."; }
+  var marketing_title = "Link to: " + web_url.substring(web_url.indexOf('://') + 3, Math.min(web_url.length, 96));
+  if (web_url.length > 96) { marketing_title = marketing_title + "..."; }
 
   // fill in remainder of link data
   link_data.branch_key = branch_key;
