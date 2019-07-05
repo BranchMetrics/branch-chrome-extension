@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
 
   "name": "Branch Link Creator",
   "description": "This extension is to be used to create Branch links from your Chrome browser.",
