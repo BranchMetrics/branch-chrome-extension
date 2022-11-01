@@ -21,3 +21,6 @@ Note that instructions below are done using the web store's beta UI. You should 
 6. It should take you to the "Store Listing" section after the upload finishes. Click "Publish Item" and it will be submitted for review.
 
 7. It should automatically be deployed after the review finishes!
+
+# Useful resources
+1. https://support.google.com/chrome/a/answer/2714278?hl=en#
