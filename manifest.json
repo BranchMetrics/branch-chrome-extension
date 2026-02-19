@@ -1,11 +1,11 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
   "name": "Branch Link Creator",
   "description": "This extension is to be used to create Branch links from your Chrome browser.",
-  "version": "1.3",
+  "version": "3.0",
 
-  "browser_action": {
+  "action": {
     "default_icon": "icon.png",
     "default_popup": "home.html"
   },
@@ -14,7 +14,9 @@
   },
   "permissions": [
     "activeTab",
-    "storage",
+    "storage"
+  ],
+  "host_permissions": [
     "https://api.branch.io/"
   ]
 }

@@ -1,0 +1,12 @@
+# Build artifacts
+branch-chrome-extension.zip
+
+# IDE
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# Node modules (if added in future)
+node_modules/
