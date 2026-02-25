@@ -12,9 +12,9 @@ Note that instructions below are done using the web store's beta UI. You should 
 3. Update the "manifest.json" file in the root directory of the repo to increment the "version" string.
 
 4. Prep the package for uploading:
-  - Delete the "branch-chrome-extension.zip" file
-  - Right click on the branch-chrome-extension project folder and choose "Compress ..."
-  - drag the new zip file into the project root folder
+  ```bash
+  ./scripts/prep-package.sh
+  ```
  
 5. In the package section of the dev console, click "Upload Updated Package" and choose the new zip file you just created.
 
@@ -23,4 +23,4 @@ Note that instructions below are done using the web store's beta UI. You should 
 7. It should automatically be deployed after the review finishes!
 
 # Useful resources
-1. https://support.google.com/chrome/a/answer/2714278?hl=en#
+1. Create and publish custom Chrome apps & extensions: https://support.google.com/chrome/a/answer/2714278?hl=en#
