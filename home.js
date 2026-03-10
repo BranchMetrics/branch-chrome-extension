@@ -118,6 +118,7 @@ function createLink(branch_key, web_url, callback) {
   link_data.data.$ios_url = web_url;
   link_data.data.$original_url = web_url;
   link_data.data.$canonical_url = web_url;
+  link_data.data['~link_type'] = 'CHROME_EXTENSION';
 
   x.send(JSON.stringify(link_data));
 }
