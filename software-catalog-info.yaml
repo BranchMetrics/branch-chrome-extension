@@ -1,0 +1,18 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: branch-chrome-extension
+  description: A Chrome extension for creating Branch links
+  tags:
+    - chrome-extension
+    - browser-extension
+    - link-creation
+    - tooling
+  annotations:
+    github.com/project-slug: BranchMetrics/branch-chrome-extension
+spec:
+  type: service
+  lifecycle: production
+  owner: Engagement
+---
